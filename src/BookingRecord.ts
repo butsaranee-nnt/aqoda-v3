@@ -1,11 +1,13 @@
 import { GuestData } from "./GuestData"
 
-class BookingRecord {
-    roomNumber: Number
-    guestData: GuestData
+export class BookingRecord {
+    roomNumber: string
+    guestName: string
+    guestAge: number
 
-    constructor(roomNumber: Number, guestData: GuestData) {
+    constructor(roomNumber: string, guestName: string, guestAge: number) {
         this.roomNumber = roomNumber
-        this.guestData = guestData
+        this.guestName = guestName
+        this.guestAge = guestAge
     }
 }

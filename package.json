@@ -1,0 +1,22 @@
+{
+  "name": "aqoda-v3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fairychan/aqoda-v3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fairychan/aqoda-v3/issues"
+  },
+  "homepage": "https://github.com/fairychan/aqoda-v3#readme",
+  "dependencies": {
+    "@types/node": "^14.0.14"
+  }
+}
