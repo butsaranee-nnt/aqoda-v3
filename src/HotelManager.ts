@@ -9,6 +9,11 @@ export interface BookingStatus {
     isSuccess: boolean
 }
 
+export interface CheckOutStatus {
+    keycardRecord: KeycardRecord
+    isSuccess: boolean
+}
+
 export class HotelManager {
     hotel: Hotel
     bookingRecords: BookingRecord[]
@@ -40,6 +45,7 @@ export class HotelManager {
 
     isAvailableRoom(roomNumber: string): boolean{
         let availableRoomsNumber = this.getAvailableRoomsNumber()
+        
         if (availableRoomsNumber.includes(roomNumber)){
             return true
         }
@@ -58,5 +64,69 @@ export class HotelManager {
         let keycardRecord = new KeycardRecord(keycard.id, bookingRecord.guestName, bookingRecord.roomNumber)
         this.keycardRecords.push(keycardRecord)
         return keycard
+    }
+
+    checkInAndAnnounceResult(bookingStatus: BookingStatus, guestData: GuestData){
+        if (bookingStatus.isSuccess) {
+            let keycard = this.checkIn(bookingStatus.bookingRecord)
+            console.log(`Room ${bookingStatus.bookingRecord.roomNumber} is booked by ${bookingStatus.bookingRecord.guestName} with keycard number ${keycard.id}.`)
+        }
+        else {
+        console.log(`Cannot book room ${bookingStatus.bookingRecord.roomNumber} for ${guestData.name}, The room is currently booked by ${bookingStatus.bookingRecord.guestName}.`)
+        }
+    }
+
+    checkOut(keycardId: string, guestName: string): CheckOutStatus {
+        let keycardRecord = this.findKeycardRecordFromKeycardId(keycardId)
+
+        if (this.isMatchKeycardWithGuestName(keycardRecord, guestName)){
+            let bookingRecord = this.findBookingRecordFromGuestName(guestName)
+            this.removeBookingRecordInBookingRecords(bookingRecord)
+            this.removeKeycardRecordInKeycardRecords(keycardRecord)
+            let keycard = new Keycard(keycardId)
+            this.hotel.restoreKeycard(keycard)
+            return {
+                keycardRecord: keycardRecord,
+                isSuccess: true
+            }
+        }
+        return {
+            keycardRecord: keycardRecord,
+            isSuccess: false
+        }
+    }
+
+    announceCheckOutResult(checkOutStatus: CheckOutStatus){
+        if (checkOutStatus.isSuccess) {
+            console.log(`Room ${checkOutStatus.keycardRecord.roomNumber} is checkout.`)
+        }
+        else {
+        console.log(`Only ${checkOutStatus.keycardRecord.guestName} can checkout with keycard number ${checkOutStatus.keycardRecord.keycardId}.`)
+        }
+    }
+
+    findKeycardRecordFromKeycardId(keycardId: string): KeycardRecord {
+        let keycardRecord = this.keycardRecords.filter(keycardRecord => keycardRecord.keycardId === keycardId).shift() as KeycardRecord
+        return keycardRecord
+    }
+
+    findBookingRecordFromGuestName(guestName: string): BookingRecord {
+        let bookingRecord = this.bookingRecords.filter(bookingRecord => bookingRecord.guestName === guestName).shift() as BookingRecord
+        return bookingRecord
+    }
+
+    isMatchKeycardWithGuestName(keycardRecord: KeycardRecord, guestName: string): boolean {
+        if (keycardRecord.guestName === guestName){
+            return true
+        }
+        return false
+    }
+
+    removeKeycardRecordInKeycardRecords(keycardRecord: KeycardRecord){
+        this.keycardRecords.splice(this.keycardRecords.indexOf(keycardRecord),1)
+    }
+
+    removeBookingRecordInBookingRecords(bookingRecord: BookingRecord){
+        this.bookingRecords.splice(this.bookingRecords.indexOf(bookingRecord),1)
     }
 }

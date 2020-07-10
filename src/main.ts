@@ -1,6 +1,6 @@
 import { Hotel } from "./Hotel";
 import { GuestData } from "./GuestData";
-import { HotelManager, BookingStatus } from "./HotelManager";
+import { HotelManager, BookingStatus, CheckOutStatus } from "./HotelManager";
 import { BookingRecord } from "./BookingRecord";
 
 const fs = require('fs')
@@ -24,7 +24,8 @@ class Command {
 
     commands.forEach(command => {
       switch (command.name) {
-        case 'create_hotel':
+
+        case 'create_hotel':{
           const [numberOfFloors, numberOfRoomsPerFloor] = command.params
 
           hotel = new Hotel(numberOfFloors, numberOfRoomsPerFloor)
@@ -34,34 +35,43 @@ class Command {
             `Hotel created with ${numberOfFloors} floor(s), ${numberOfRoomsPerFloor} room(s) per floor.`
           )
           return
-        
-        case 'book':
+        }
+
+        case 'book':{
           const [roomNumber, guestName, guestAge] = command.params
 
-          guestData = new GuestData(guestName, guestAge)\
-        
+          guestData = new GuestData(guestName, guestAge)
           let bookingStatus = hotelManager.book(roomNumber.toString(), guestData)
+          hotelManager.checkInAndAnnounceResult(bookingStatus, guestData)
 
-          if (bookingStatus.isSuccess) {
-            let keycard = hotelManager.checkIn(bookingStatus.bookingRecord)
-            console.log(hotelManager.keycardRecords,"------------------------")
-            console.log(hotelManager.bookingRecords,"********************")
-            console.log(`Room ${roomNumber} is booked by ${bookingStatus.bookingRecord.guestName} with keycard number ${keycard.id}.`)
-          }
-          else {
-            console.log(`Cannot book room ${roomNumber} for ${guestData.name}, The room is currently booked by ${bookingStatus.bookingRecord.guestName}.`)
-          }
+          return
+        }
+        
+        case 'list_available_rooms':{
+          let availableRoomsNumber = hotelManager.getAvailableRoomsNumber()
+          console.log(...availableRoomsNumber)
+
+          return
+        }
+
+        case 'checkout':{
+          const [keycardId, guestName] = command.params
+
+          let checkOutStatus = hotelManager.checkOut(keycardId.toString(), guestName)
+          hotelManager.announceCheckOutResult(checkOutStatus)
+          
+          return
+        }
+        
 
         default:
-          return
+        return
       }
     })
   }
   
   function getCommandsFromFileName(fileName: string) {
     const file = fs.readFileSync(fileName, 'utf-8')
-    // let commandName: string
-    // let params: any
 
     return file
       .split('\n')

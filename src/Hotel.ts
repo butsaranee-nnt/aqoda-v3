@@ -47,5 +47,15 @@ export class Hotel {
         return keycard
     }
 
+    restoreKeycard(keycard: Keycard){
+        this.keycards.push(keycard)
+        this.sortByKey(this.keycards, 'id')
+    }
     
+    sortByKey(array: any[], key: string) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
 }
