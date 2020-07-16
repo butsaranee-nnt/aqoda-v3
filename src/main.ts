@@ -65,7 +65,7 @@ class Command {
         
         case 'list_guest':{
           let totalGuestsNameInHotel = hotelManager.getTotalGuestsNameInHotel()
-          console.log(...totalGuestsNameInHotel)
+          console.log(totalGuestsNameInHotel.join(', '))
           return
         }
 
@@ -79,7 +79,20 @@ class Command {
         }
 
         case 'list_guest_by_age':{
-          
+          const [sign, age] = command.params
+
+          let guestsName = hotelManager.getGuestsNameByAge(sign.toString(), age)
+          console.log(guestsName.join(', '))
+
+          return
+        }
+
+        case 'list_guest_by_floor':{
+          const [floorNumber] = command.params
+
+          let guestsName = hotelManager.getGuestsNameByFloor(floorNumber)
+          console.log(guestsName.join(', '))
+
           return
         }
         

@@ -132,7 +132,7 @@ export class HotelManager {
 
     getGuestNameInRoom(roomNumber: string): string {
         let keycardRecord = this.keycardRecords.filter( keycardRecord => keycardRecord.roomNumber === roomNumber).shift() as KeycardRecord
-        let guestName = keycardRecord?.guestName
+        let guestName = keycardRecord.guestName
         return guestName
     }
 
@@ -142,4 +142,35 @@ export class HotelManager {
         return totalGuestsNameInHotel
     }
 
+    getGuestsNameByAge(sign: string, age: number): string[] {
+        if (sign === '>'){
+            let bookingRecord = this.bookingRecords.filter( bookingRecord => bookingRecord.guestAge > age)
+            let guestsName = bookingRecord.map(bookingRecord => bookingRecord.guestName)
+            return guestsName
+        }
+        else if (sign === '<'){
+            let bookingRecord = this.bookingRecords.filter( bookingRecord => bookingRecord.guestAge < age)
+            let guestsName = bookingRecord.map(bookingRecord => bookingRecord.guestName)
+            return guestsName
+        }
+        else if (sign === '='){
+            let bookingRecord = this.bookingRecords.filter( bookingRecord => bookingRecord.guestAge == age)
+            let guestsName = bookingRecord.map(bookingRecord => bookingRecord.guestName)
+            return guestsName
+        }
+        return []
+    }
+
+    getRoomNumberByFloor(floorNumber: number): string[] {
+        let rooms = this.hotel.rooms.filter(room => room.floorNumber == floorNumber)
+        let roomsNumber = rooms.map(room => room.id)
+        return roomsNumber
+    }
+
+    getGuestsNameByFloor(floorNumber: number): string[] {
+        let roomsNumber = this.getRoomNumberByFloor(floorNumber)
+        roomsNumber = roomsNumber.filter(roomNumber => this.isAvailableRoom(roomNumber) == false)
+        let guestsName = roomsNumber.map(roomNumber => this.getGuestNameInRoom(roomNumber))
+        return guestsName
+    }
 }
