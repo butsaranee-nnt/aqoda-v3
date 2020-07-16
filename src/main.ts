@@ -63,7 +63,26 @@ class Command {
           return
         }
         
+        case 'list_guest':{
+          let totalGuestsNameInHotel = hotelManager.getTotalGuestsNameInHotel()
+          console.log(...totalGuestsNameInHotel)
+          return
+        }
 
+        case 'get_guest_in_room':{
+          const [roomNumber] = command.params
+
+          let guestName = hotelManager.getGuestNameInRoom(roomNumber.toString())
+          console.log(guestName)
+
+          return
+        }
+
+        case 'list_guest_by_age':{
+          
+          return
+        }
+        
         default:
         return
       }

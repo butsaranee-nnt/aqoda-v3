@@ -129,4 +129,17 @@ export class HotelManager {
     removeBookingRecordInBookingRecords(bookingRecord: BookingRecord){
         this.bookingRecords.splice(this.bookingRecords.indexOf(bookingRecord),1)
     }
+
+    getGuestNameInRoom(roomNumber: string): string {
+        let keycardRecord = this.keycardRecords.filter( keycardRecord => keycardRecord.roomNumber === roomNumber).shift() as KeycardRecord
+        let guestName = keycardRecord?.guestName
+        return guestName
+    }
+
+    getTotalGuestsNameInHotel(){
+        let bookedRoomsNumber = this.bookingRecords.map(record => record.roomNumber)
+        let totalGuestsNameInHotel = bookedRoomsNumber.map(roomNumber => this.getGuestNameInRoom(roomNumber))
+        return totalGuestsNameInHotel
+    }
+
 }
